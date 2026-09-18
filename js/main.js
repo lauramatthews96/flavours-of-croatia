@@ -36,14 +36,31 @@
 
   const heroVideos = [...document.querySelectorAll(".hero-video")].filter((el) => el.querySelector("iframe"));
   const reduceVideoMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cssLink = document.querySelector('link[rel="stylesheet"][href*="styles.css"]');
+  const posterBase = cssLink ? new URL("../assets/", cssLink.href).href : "assets/";
+
+  heroVideos.forEach((heroVideo) => {
+    const iframe = heroVideo.querySelector("iframe");
+    const id = (iframe?.getAttribute("src") || iframe?.dataset.vimeo || "").match(/(\d{7,})/)?.[1];
+    if (!iframe || !id) return;
+    iframe.dataset.vimeo = id;
+    const posterUrl = `${posterBase}video-poster-${id}.jpg`;
+    heroVideo.style.backgroundImage = `url("${posterUrl}")`;
+    let poster = heroVideo.querySelector(".hero-poster");
+    if (!poster) {
+      poster = document.createElement("img");
+      poster.className = "hero-poster";
+      poster.alt = "";
+      iframe.before(poster);
+    }
+    poster.src = posterUrl;
+  });
 
   if (!reduceVideoMotion && heroVideos.length) {
     const bindHeroes = () => {
       heroVideos.forEach((heroVideo) => {
         const iframe = heroVideo.querySelector("iframe");
         if (!iframe || !window.Vimeo) return;
-        const id = (iframe.getAttribute("src") || "").match(/(\d{7,})/)?.[1];
-        if (id) iframe.dataset.vimeo = id;
         const player = new window.Vimeo.Player(iframe);
         const start = () => {
           player.setAutopause(false).catch(() => {});
@@ -52,7 +69,9 @@
           player.play().catch(() => {});
         };
         player.ready().then(start).catch(start);
-        player.on("playing", start);
+        player.on("playing", () => {
+          heroVideo.classList.add("is-ready");
+        });
       });
     };
     if (window.Vimeo) bindHeroes();
