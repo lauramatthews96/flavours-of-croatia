@@ -62,19 +62,16 @@
         const iframe = heroVideo.querySelector("iframe");
         if (!iframe || !window.Vimeo) return;
         const player = new window.Vimeo.Player(iframe);
-        player.setAutopause(false).catch(() => {});
-        player.setMuted(true).catch(() => {});
-        player.setVolume(0).catch(() => {});
+        const start = () => {
+          player.setAutopause(false).catch(() => {});
+          player.setMuted(true).catch(() => {});
+          player.setVolume(0).catch(() => {});
+          player.play().catch(() => {});
+        };
+        player.ready().then(start).catch(start);
         player.on("playing", () => {
           heroVideo.classList.add("is-ready");
         });
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) player.play().catch(() => {});
-            else player.pause().catch(() => {});
-          });
-        }, { threshold: 0.08, rootMargin: "160px 0px" });
-        io.observe(heroVideo);
       });
     };
     if (window.Vimeo) bindHeroes();
