@@ -34,25 +34,56 @@
   });
   toTop?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-  const heroVideo = document.querySelector(".hero-video");
-  const heroIframe = heroVideo?.querySelector("iframe");
-  if (heroIframe) {
-    const revealHero = () => heroVideo.classList.add("is-ready");
-    const bindHero = () => {
-      const player = new window.Vimeo.Player(heroIframe);
-      player.setMuted(true).catch(() => {});
-      player.setVolume(0).catch(() => {});
-      player.on("playing", revealHero);
-      player.on("bufferend", revealHero);
+  const heroVideos = [...document.querySelectorAll(".hero-video")].filter((el) => el.querySelector("iframe"));
+  const reduceVideoMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cssLink = document.querySelector('link[rel="stylesheet"][href*="styles.css"]');
+  const posterBase = cssLink ? new URL("../assets/", cssLink.href).href : "assets/";
+
+  heroVideos.forEach((heroVideo) => {
+    const iframe = heroVideo.querySelector("iframe");
+    const id = (iframe?.getAttribute("src") || iframe?.dataset.vimeo || "").match(/(\d{7,})/)?.[1];
+    if (!iframe || !id) return;
+    iframe.dataset.vimeo = id;
+    const posterUrl = `${posterBase}video-poster-${id}.jpg`;
+    heroVideo.style.backgroundImage = `url("${posterUrl}")`;
+    let poster = heroVideo.querySelector(".hero-poster");
+    if (!poster) {
+      poster = document.createElement("img");
+      poster.className = "hero-poster";
+      poster.alt = "";
+      iframe.before(poster);
+    }
+    poster.src = posterUrl;
+  });
+
+  if (!reduceVideoMotion && heroVideos.length) {
+    const bindHeroes = () => {
+      heroVideos.forEach((heroVideo) => {
+        const iframe = heroVideo.querySelector("iframe");
+        if (!iframe || !window.Vimeo) return;
+        const player = new window.Vimeo.Player(iframe);
+        player.setAutopause(false).catch(() => {});
+        player.setMuted(true).catch(() => {});
+        player.setVolume(0).catch(() => {});
+        player.on("playing", () => {
+          heroVideo.classList.add("is-ready");
+        });
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) player.play().catch(() => {});
+            else player.pause().catch(() => {});
+          });
+        }, { threshold: 0.08, rootMargin: "160px 0px" });
+        io.observe(heroVideo);
+      });
     };
-    if (window.Vimeo) bindHero();
+    if (window.Vimeo) bindHeroes();
     else {
       const script = document.createElement("script");
       script.src = "https://player.vimeo.com/api/player.js";
-      script.onload = bindHero;
+      script.onload = bindHeroes;
       document.head.appendChild(script);
     }
-    setTimeout(revealHero, 4000);
   }
 
   document.querySelectorAll(".nav-item").forEach((item) => {
@@ -108,6 +139,18 @@
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && lightbox && !lightbox.hidden) lightbox.hidden = true;
+  });
+
+  document.querySelectorAll(".partner-gallery, .mosaic, .photo-grid, .gallery-grid").forEach((grid) => {
+    if (grid.querySelector(".mobile-fill")) return;
+    const items = [...grid.children];
+    if (items.length % 2 !== 1) return;
+    const clone = items[0].cloneNode(true);
+    clone.classList.add("mobile-fill");
+    clone.setAttribute("aria-hidden", "true");
+    if (clone.tagName === "IMG") clone.alt = "";
+    clone.querySelectorAll?.("img").forEach((img) => { img.alt = ""; });
+    grid.appendChild(clone);
   });
 
   const revealTargets = document.querySelectorAll(

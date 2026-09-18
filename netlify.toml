@@ -1,2 +1,7 @@
 [build]
   publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://player.vimeo.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://flavoursofcroatiasailingholidays.com https://i.vimeocdn.com https://f.vimeocdn.com https://*.vimeocdn.com; media-src 'self' https://player.vimeo.com https://*.vimeocdn.com; frame-src https://player.vimeo.com; connect-src 'self' https://player.vimeo.com https://vimeo.com https://*.vimeocdn.com;"

@@ -125,7 +125,10 @@ button, input, textarea, select { font-family: inherit; }
 .hero-video {
   position: absolute; inset: 0; z-index: 0; overflow: hidden;
   pointer-events: none;
-  background: var(--navy-deep);
+  background-color: var(--navy-deep);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .hero-poster,
 .hero-video iframe {
@@ -134,9 +137,21 @@ button, input, textarea, select { font-family: inherit; }
   height: max(100svh, calc(100vw * 9 / 16));
   transform: translate(-50%, -50%) scale(1.45);
 }
-.hero-poster { object-fit: cover; }
-.hero-video iframe { opacity: 0; transition: opacity .5s ease; }
-.hero-video.is-ready iframe { opacity: 1; }
+.hero-poster {
+  object-fit: cover;
+  z-index: 2;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  transform: none;
+  opacity: 1;
+  transition: opacity .45s ease;
+}
+.hero-video iframe {
+  opacity: 1;
+  z-index: 0;
+}
+.hero-video.is-ready .hero-poster { opacity: 0; }
 .hero::before {
   content: "";
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -275,7 +290,8 @@ h1, h2, .section-title {
 .photo-grid.editorial img:nth-child(15) { grid-column: 5 / 7; grid-row: 12 / 14; }
 
 .quote-band, .landscape-band, .testimonial {
-  position: relative; min-height: 360px; background: center / cover no-repeat;
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 360px; background: center / cover no-repeat;
   display: grid; place-items: center;
 }
 .quote-band {
@@ -292,11 +308,11 @@ h1, h2, .section-title {
   margin-top: 48px;
 }
 .quote-band::before {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(180deg, rgba(244,239,230,.42), transparent 18%, transparent 82%, rgba(244,239,230,.48));
 }
 .landscape-band::before, .testimonial::before {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: linear-gradient(180deg, rgba(247,243,235,.5), transparent 22%, transparent 78%, rgba(247,243,235,.55));
 }
 .quote-statement {
@@ -370,17 +386,21 @@ h1, h2, .section-title {
   position: relative; overflow: hidden; min-height: 0; aspect-ratio: 4 / 3; color: #fff;
   display: grid; align-items: end;
 }
+.journey-card img,
+.journey-card .hero-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+}
 .journey-card img {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  object-fit: cover;
   transition: transform 1.4s var(--ease);
 }
-.journey-card img, .journey-card::after { pointer-events: none; }
+.journey-card img, .journey-card .hero-video, .journey-card::after { pointer-events: none; }
 .journey-card::after {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; z-index: 1;
   background: linear-gradient(180deg, rgba(10,13,11,.06) 18%, rgba(10,13,11,.55) 62%, rgba(10,13,11,.82) 100%);
 }
 .journey-card:hover img { transform: scale(1.06); }
-.journey-copy { position: relative; z-index: 1; padding: 28px 28px 32px; max-width: none; }
+.journey-copy { position: relative; z-index: 2; padding: 28px 28px 32px; max-width: none; }
 .journey-copy .kicker {
   display: inline-block; color: #e4d0a0; background: none; padding: 0;
   margin: 0 0 12px; letter-spacing: 2.6px; font-size: 12px; font-weight: 600;
@@ -434,7 +454,7 @@ h1, h2, .section-title {
 .why-item:nth-child(4) h3, .why-item:nth-child(4) .icon-ring { color: #7eb8c9; }
 .why-item p { margin: 0; color: rgba(255,255,255,.7); font-size: 15.5px; }
 
-.review-card { width: min(540px, 56vw); margin: 0 0 0 8%; }
+.review-card { position: relative; z-index: 2; width: min(540px, 56vw); margin: 0 0 0 8%; }
 .review-card p {
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: 22px; font-style: italic; line-height: 1.45; color: var(--ink);
@@ -462,6 +482,8 @@ h1, h2, .section-title {
 
 .newsletter {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 560px;
   background: url("../assets/newsletter-coast.jpg") center 42% / cover no-repeat;
   padding: 88px 0;
@@ -472,6 +494,8 @@ h1, h2, .section-title {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(180deg, rgba(244,239,230,.42), transparent 20%, transparent 78%, rgba(10,13,11,.22));
 }
 .newsletter-row {
@@ -615,20 +639,25 @@ h1, h2, .section-title {
 .to-top:hover { background: var(--navy); color: #fff; }
 
 .page-hero {
+  position: relative; isolation: isolate; overflow: hidden;
   min-height: 78vh; display: grid; place-items: center; color: #fff; text-align: center;
-  background:
-    linear-gradient(180deg, rgba(10,13,11,.45), rgba(10,13,11,.18) 46%, rgba(10,13,11,.58)),
-    url("../assets/hero.jpg") center 55% / cover no-repeat;
+  background: url("../assets/hero.jpg") center 55% / cover no-repeat;
   padding-top: 80px;
+}
+.page-hero::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(10,13,11,.45), rgba(10,13,11,.18) 46%, rgba(10,13,11,.58));
 }
 .page-hero.ocean {
   min-height: 420px;
   height: clamp(340px, 42vw, 480px);
-  background-image:
-    linear-gradient(180deg, rgba(10,13,11,.32), transparent 42%),
-    url("../assets/swu-hero.png");
+  background-image: url("../assets/swu-hero.png");
   background-size: cover;
   background-position: center;
+}
+.page-hero.ocean::before {
+  background: linear-gradient(180deg, rgba(10,13,11,.38), rgba(10,13,11,.12) 42%, rgba(10,13,11,.46));
 }
 .page-hero.ocean p { display: none; }
 .page-hero.ocean h1 {
@@ -637,19 +666,34 @@ h1, h2, .section-title {
   text-shadow: 0 8px 28px rgba(8, 16, 28, .45);
 }
 .page-hero.gourmet, .page-hero.custom, .page-hero.contact {
-  background-image:
-    linear-gradient(180deg, rgba(10,13,11,.46), rgba(10,13,11,.16) 48%, rgba(10,13,11,.58)),
-    url("https://flavoursofcroatiasailingholidays.com/wp-content/uploads/2018/07/Screenshot-2024-12-05-at-23.03.35.png");
   background-size: cover; background-position: center 58%;
 }
 .page-hero.gourmet {
   min-height: 0;
   height: clamp(260px, 32vw, 380px);
+  background-image: url("../assets/hero.jpg");
 }
 .page-hero.custom {
   min-height: 0;
   height: clamp(320px, 44vw, 540px);
   background-position: center 32%;
+  background-image: url("../assets/hero.jpg");
+}
+.page-hero.contact {
+  background-image: url("../assets/hero.jpg");
+}
+.page-hero .hero-copy,
+.page-hero > div:not(.hero-video) { position: relative; z-index: 2; }
+.video-band {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 320px;
+  height: clamp(280px, 38vw, 460px);
+  background: var(--navy-deep) url("../assets/quote-coast.jpg") center 45% / cover no-repeat;
+}
+.video-band::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(247,243,235,.42), transparent 22%, transparent 78%, rgba(247,243,235,.5));
 }
 .page-hero.gourmet h1 { font-size: clamp(36px, 5vw, 68px); }
 .page-hero h1 { font-size: clamp(48px, 7vw, 92px); margin: 0; }
@@ -882,6 +926,7 @@ h1, h2, .section-title {
 .partner-gallery { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 30px; }
 .partner-gallery img { width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform .55s var(--ease); }
 .partner-gallery img:hover { transform: scale(1.05); }
+.mobile-fill { display: none; }
 
 .contact-layout { padding: 72px 0 96px; background: var(--ivory); }
 .contact-grid {
@@ -994,6 +1039,12 @@ h1, h2, .section-title {
   .photo-grid, .photo-grid.editorial, .include-grid, .mosaic, .partner-gallery, .gallery-grid.is-open {
     grid-template-columns: 1fr 1fr;
   }
+  .photo-grid .mobile-fill,
+  .mosaic .mobile-fill,
+  .partner-gallery .mobile-fill,
+  .gallery-grid .mobile-fill {
+    display: block;
+  }
   .photo-grid.editorial {
     grid-auto-rows: auto;
   }
@@ -1019,6 +1070,7 @@ h1, h2, .section-title {
   .page-hero.ocean, .page-hero.gourmet, .page-hero.custom, .page-hero.contact {
     min-height: 0; height: 240px;
   }
+  .video-band { min-height: 0; height: 220px; }
   .page-hero h1,
   .page-hero.ocean h1,
   .page-hero.gourmet h1,
