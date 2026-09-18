@@ -52,12 +52,7 @@
           player.play().catch(() => {});
         };
         player.ready().then(start).catch(start);
-        const reveal = (data) => {
-          if ((data?.seconds || 0) < 0.15) return;
-          heroVideo.classList.add("is-ready");
-          player.off("timeupdate", reveal);
-        };
-        player.on("timeupdate", reveal);
+        player.on("playing", start);
       });
     };
     if (window.Vimeo) bindHeroes();

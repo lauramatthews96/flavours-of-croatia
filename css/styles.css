@@ -128,13 +128,6 @@ button, input, textarea, select { font-family: inherit; }
   container-type: size;
   background: var(--navy-deep);
 }
-.hero-video::after {
-  content: "";
-  position: absolute; inset: 0; z-index: 2;
-  background: var(--navy-deep);
-  pointer-events: none;
-}
-.hero-video.is-ready::after { display: none; }
 .hero-video iframe {
   position: absolute; top: 50%; left: 50%; border: 0;
   width: max(100%, calc(100cqh * 16 / 9));
@@ -158,8 +151,7 @@ button, input, textarea, select { font-family: inherit; }
   animation: rise 1.2s var(--ease);
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-video iframe,
-  .hero-video::after { display: none; }
+  .hero-video iframe { display: none; }
 }
 .hero-caption {
   position: absolute; left: 56px; bottom: 40px; z-index: 2;
