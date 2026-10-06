@@ -98,30 +98,14 @@
     document.querySelectorAll(".nav-item.is-open").forEach((item) => item.classList.remove("is-open"));
   });
 
+  if (new URLSearchParams(window.location.search).get("sent") === "1") {
+    document.querySelectorAll(".form-note").forEach((note) => note.classList.add("show"));
+  }
+
   document.querySelectorAll("[data-form]").forEach((form) => {
-    form.addEventListener("submit", async (event) => {
-      const formName = form.querySelector('input[name="form-name"]')?.value;
-      if (!formName) {
-        event.preventDefault();
-        return;
-      }
+    form.addEventListener("submit", (event) => {
+      if (form.querySelector('input[name="form-name"]')) return;
       event.preventDefault();
-      const body = new URLSearchParams(new FormData(form)).toString();
-      const endpoint = form.getAttribute("action") || window.location.pathname || "/";
-      try {
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body,
-        });
-        if (!res.ok) throw new Error(String(res.status));
-      } catch (_) {
-        form.submit();
-        return;
-      }
-      const note = form.parentElement.querySelector(".form-note") || form.querySelector(".form-note");
-      note?.classList.add("show");
-      form.reset();
     });
   });
 
