@@ -100,15 +100,23 @@
 
   document.querySelectorAll("[data-form]").forEach((form) => {
     form.addEventListener("submit", async (event) => {
+      const formName = form.querySelector('input[name="form-name"]')?.value;
+      if (!formName) {
+        event.preventDefault();
+        return;
+      }
       event.preventDefault();
-      if (form.getAttribute("data-netlify") === "true") {
-        try {
-          await fetch("/", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams(new FormData(form)).toString(),
-          });
-        } catch (_) { /* still show the thank-you note */ }
+      const body = new URLSearchParams(new FormData(form)).toString();
+      try {
+        const res = await fetch(form.getAttribute("action") || "/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+      } catch (_) {
+        form.submit();
+        return;
       }
       const note = form.parentElement.querySelector(".form-note") || form.querySelector(".form-note");
       note?.classList.add("show");
