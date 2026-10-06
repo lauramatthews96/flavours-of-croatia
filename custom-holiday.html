@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://player.vimeo.com">
-  <link rel="stylesheet" href="css/styles.css?v=114">
+  <link rel="stylesheet" href="css/styles.css?v=115">
 </head>
 <body>
   <header class="site-header">
@@ -235,10 +235,9 @@
         <h2>Request a trip consultation</h2>
         <p>Tell us how you like to travel. We’ll shape a week around your islands, wines, and pace.</p>
       </div>
-      <form class="consult-form" name="contact" method="POST" action="/custom-holiday.html" data-netlify="true" data-form>
+      <form class="consult-form" name="contact" method="POST" action="/custom-holiday.html?sent=1" data-netlify="true" data-form>
         <input type="hidden" name="form-name" value="contact">
         <input type="hidden" name="source" value="Create the Holiday of Your Dreams">
-        <input type="hidden" name="_redirect" value="/custom-holiday.html?sent=1">
         <div class="consult-grid">
           <label>Name
             <input name="name" placeholder="Full name" required>
@@ -269,7 +268,7 @@
           <textarea name="message" rows="4" placeholder="Islands, wines, celebrations, pace"></textarea>
         </label>
         <button type="submit">Request consultation</button>
-        <p class="form-note">Thank you. We’ll be in touch shortly to start planning your trip.</p>
+        <p class="form-note">Thank you for your submission. We’ll be in touch shortly to start planning your trip.</p>
       </form>
     </div>
   </section>
@@ -306,6 +305,6 @@
   </footer>
   <button class="to-top" type="button" aria-label="Back to top">⌃</button>
   <script src="https://player.vimeo.com/api/player.js"></script>
-  <script src="js/main.js?v=26"></script>
+  <script src="js/main.js?v=27"></script>
 </body>
 </html>

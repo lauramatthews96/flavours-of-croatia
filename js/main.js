@@ -99,7 +99,12 @@
   });
 
   if (new URLSearchParams(window.location.search).get("sent") === "1") {
-    document.querySelectorAll(".form-note").forEach((note) => note.classList.add("show"));
+    document.querySelectorAll("[data-form]").forEach((form) => {
+      if (!form.querySelector('input[name="form-name"]')) return;
+      form.classList.add("is-sent");
+      form.querySelector(".form-note")?.classList.add("show");
+      form.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   }
 
   document.querySelectorAll("[data-form]").forEach((form) => {

@@ -1031,6 +1031,15 @@ h1, h2, .section-title {
 }
 .form-note { display: none; color: var(--olive); font-weight: 500; }
 .form-note.show { display: block; }
+form.is-sent > *:not(.form-note):not(input[type="hidden"]) { display: none; }
+form.is-sent .form-note {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.3;
+  color: var(--navy);
+  margin: 0;
+}
 .article img.hero-img { width: 100%; max-height: 460px; object-fit: cover; margin: 0 0 28px; }
 .meta { color: var(--muted); font-size: 14px; }
 
