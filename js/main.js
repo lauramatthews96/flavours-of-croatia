@@ -107,8 +107,9 @@
       }
       event.preventDefault();
       const body = new URLSearchParams(new FormData(form)).toString();
+      const endpoint = form.getAttribute("action") || window.location.pathname || "/";
       try {
-        const res = await fetch(form.getAttribute("action") || "/", {
+        const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body,
